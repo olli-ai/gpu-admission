@@ -1,6 +1,6 @@
 FROM golang:1.13-alpine as build-stage
 
-WORKSPACE /build
+WORKDIR /build
 
 COPY go.mod go.sum ./
 RUN go mod download
