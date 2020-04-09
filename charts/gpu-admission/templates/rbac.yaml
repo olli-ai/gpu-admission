@@ -1,0 +1,32 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: gpu-admission
+  labels:
+    k8s-app: gpu-admission
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["configmaps", "pods", "namespaces"]
+  verbs: ["get", "watch", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: gpu-admission
+  labels:
+    k8s-app: gpu-admission
+roleRef:
+  kind: ClusterRole
+  name: gpu-admission
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: gpu-admission
+    namespace: {{ .Release.Namespace }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: gpu-admission
+  labels:
+    k8s-app: gpu-admission

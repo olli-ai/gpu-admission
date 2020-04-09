@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gpu-admission-config
+data:
+  policy.yaml: |-
+    kind: Policy
+    apiVersion: v1
+    predicates:
+    - name: PodFitsHostPorts
+    - name: PodFitsResources
+    - name: NoDiskConflict
+    - name: MatchNodeSelector
+    - name: HostName
+    priorities:
+    - name: BalancedResourceAllocation
+      weight: 1
+    - name: ServiceSpreadingPriority
+      weight: 1
+    extenders:
+    - urlPrefix: http://127.0.0.1:{{ .Values.internalPort }}/scheduler
+      apiVersion: v1beta1
+      filterVerb: predicates
+      enableHttps: false
+      nodeCacheCapable: false
+    hardPodAffinitySymmetricWeight: 10
+    alwaysCheckAllPredicates: false
+  gpu-admission.json: {{ .Values.config | toJson | quote }}

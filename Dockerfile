@@ -1,43 +1,14 @@
-FROM centos:7 as build
+FROM golang:1.13-alpine as build-stage
 
-ARG version
-ARG commit
+WORKSPACE /build
 
-RUN yum install -y rpm-build make
+COPY go.mod go.sum ./
+RUN go mod download
 
-ENV GOLANG_VERSION 1.13.4
-RUN curl -sSL https://dl.google.com/go/go${GOLANG_VERSION}.linux-amd64.tar.gz \
-    | tar -C /usr/local -xz
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+COPY main.go ./
+COPY pkg ./pkg
+RUN go build -o gpu-admission
 
-RUN mkdir -p /root/rpmbuild/{SPECS,SOURCES}
+FROM golang:1.13-alpine as production-stage
 
-COPY gpu-admission.spec /root/rpmbuild/SPECS
-COPY gpu-admission-source.tar.gz /root/rpmbuild/SOURCES
-
-RUN echo '%_topdir /root/rpmbuild' > /root/.rpmmacros \
-          && echo '%__os_install_post %{nil}' >> /root/.rpmmacros \
-                  && echo '%debug_package %{nil}' >> /root/.rpmmacros
-WORKDIR /root/rpmbuild/SPECS
-RUN rpmbuild -ba --quiet \
-  --define 'version '${version}'' \
-  --define 'commit '${commit}'' \
-  gpu-admission.spec
-
-
-FROM centos:7
-
-ARG version
-ARG commit
-
-COPY --from=build /root/rpmbuild/RPMS/x86_64/gpu-admission-${version}-${commit}.el7.x86_64.rpm /tmp
-
-RUN rpm -ivh /tmp/gpu-admission-${version}-${commit}.el7.x86_64.rpm
-
-EXPOSE 3456
-
-VOLUME ["/var/log/gpu-admission"]
-VOLUME ["/etc/kubernetes"]
-
-CMD ["/bin/bash", "-c", "/usr/bin/gpu-admission --kubeconfig=/etc/kubernetes/kube-scheduler/kubeconfig --config=/etc/kubernetes/gpu-admission.config --address=0.0.0.0:3456 --v=$LOG_LEVEL --logtostderr=false --log-dir=/var/log/gpu-admission $EXTRA_FLAGS"]
+COPY --from=build-stage /build/gpu-admission /gpu-admission
