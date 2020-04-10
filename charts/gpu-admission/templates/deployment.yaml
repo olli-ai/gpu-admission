@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: gpu-scheduler
   labels:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -21,7 +21,17 @@ spec:
 {{- end }}
     spec:
       containers:
-      - name: {{ .Chart.Name }}
+      - name: kubernetes-scheduler
+        image: gcr.io/google_containers/hyperkube:v1.18.1
+        imagePullPolicy: IfNotPresent
+        args:
+        - kube-scheduler
+        - --config=/gpu-admission-config/policy.yaml
+        - -v=4
+        volumeMounts:
+        - name: gpu-admission-config
+          mountPath: /gpu-admission-config
+      - name: gpu-admission
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
@@ -55,16 +65,6 @@ spec:
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
-        volumeMounts:
-        - name: gpu-admission-config
-          mountPath: /gpu-admission-config
-      - name: kubernetes-scheduler
-        image: gcr.io/google_containers/hyperkube:v1.18.1
-        imagePullPolicy: IfNotPresent
-        args:
-        - kube-scheduler
-        - --config=/gpu-admission-config/policy.yaml
-        - -v=4
         volumeMounts:
         - name: gpu-admission-config
           mountPath: /gpu-admission-config

@@ -33,6 +33,8 @@ canary:
   host: acme.com
 
 internalPort: 3456
+podAnnotations:
+  reloader.stakater.com/auto: "true"
 resources:
   limits:
     cpu: 100m
@@ -53,7 +55,7 @@ readinessProbe:
   timeoutSeconds: 1
 
 config:
-  QuotaConfigMapName: gpuquota
+  QuotaConfigMapName: gpu-admission-quota
   QuotaConfigMapNamespace: kube-system
   GPUModelLabel: gaia.tencent.com/gpu-model
   GPUPoolLabel: gaia.tencent.com/gpu-pool
