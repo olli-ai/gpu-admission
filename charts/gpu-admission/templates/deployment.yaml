@@ -31,6 +31,8 @@ spec:
         volumeMounts:
         - name: gpu-admission-config
           mountPath: /gpu-admission-config
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
       - name: gpu-admission
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -68,7 +70,6 @@ spec:
         volumeMounts:
         - name: gpu-admission-config
           mountPath: /gpu-admission-config
-{{ toYaml .Values.resources | indent 12 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       serviceAccountName: gpu-admission
       volumes:
