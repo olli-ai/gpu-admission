@@ -6,7 +6,7 @@ metadata:
     k8s-app: gpu-admission
 rules:
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["configmaps", "pods", "namespaces"]
+  resources: ["configmaps", "namespaces", "nodes", "pods"]
   verbs: ["get", "watch", "list"]
 ---
 kind: ClusterRoleBinding
