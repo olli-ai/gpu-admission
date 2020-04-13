@@ -5,7 +5,7 @@ metadata:
   labels:
     k8s-app: gpu-admission
 rules:
-- apiGroups: [""] # "" indicates the core API group
+- apiGroups: ["*"]
   resources: ["*"]
   verbs: ["get", "watch", "list"]
 - apiGroups: [""] # "" indicates the core API group
