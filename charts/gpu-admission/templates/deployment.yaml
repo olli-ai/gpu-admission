@@ -31,6 +31,16 @@ spec:
         - --leader-elect=false
         - --scheduler-name=gpu-scheduler
         - -v=4
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+          initialDelaySeconds: 15
+        name: kube-second-scheduler
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
         volumeMounts:
         - name: gpu-admission-config
           mountPath: /gpu-admission-config
