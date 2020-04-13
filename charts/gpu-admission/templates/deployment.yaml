@@ -26,7 +26,7 @@ spec:
         imagePullPolicy: IfNotPresent
         args:
         - kube-scheduler
-        - --policy-config-file=/gpu-admission-config/policy.yaml
+        - --policy-config-file=/gpu-admission-config/policy.json
         - --address=0.0.0.0
         - --leader-elect=false
         - --scheduler-name=gpu-scheduler
