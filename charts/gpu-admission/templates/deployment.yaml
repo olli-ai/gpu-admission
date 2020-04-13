@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: kubernetes-scheduler
-        image: gcr.io/google_containers/hyperkube:v1.18.1
+        image: gcr.io/google_containers/hyperkube:v1.14.10
         imagePullPolicy: IfNotPresent
         args:
         - kube-scheduler
