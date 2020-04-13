@@ -5,12 +5,9 @@ metadata:
   labels:
     k8s-app: gpu-admission
 rules:
-- apiGroups: ["*"]
-  resources: ["*"]
-  verbs: ["get", "watch", "list"]
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["endpoints"]
-  verbs: ["get", "update", "patch", "delete"]
+  resources: ["configmaps", "namespaces", "nodes", "pods"]
+  verbs: ["get", "watch", "list"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -21,6 +18,21 @@ metadata:
 roleRef:
   kind: ClusterRole
   name: gpu-admission
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: gpu-admission
+    namespace: {{ .Release.Namespace }}
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: gpu-admission-system
+  labels:
+    k8s-app: gpu-admission
+roleRef:
+  kind: ClusterRole
+  name: system:kube-scheduler
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: ServiceAccount
