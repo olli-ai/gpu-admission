@@ -9,13 +9,9 @@ rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps", "namespaces", "nodes", "pods"]
   verbs: ["get", "watch", "list"]
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["pods"]
-  verbs: ["update", "patch"]
-# extra rules for kubernetes-scheduler
-- apiGroups: ["storage.k8s.io"]
-  resources: ["storageclasses"]
-  verbs: ["get", "watch", "list"]
+# - apiGroups: [""] # "" indicates the core API group
+#   resources: ["pods"]
+#   verbs: ["update", "patch"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1

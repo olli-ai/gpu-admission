@@ -5,23 +5,24 @@ metadata:
   labels:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: gpu-admission
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: gpu-admission
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
         draft: {{ default "draft-app" .Values.draft }}
-        app: {{ template "fullname" . }}
+        app: gpu-admission
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
       containers:
-      - name: kubernetes-scheduler
+      - name: kube-scheduler
         image: gcr.io/google_containers/hyperkube:v1.14.10
         imagePullPolicy: IfNotPresent
         args:
