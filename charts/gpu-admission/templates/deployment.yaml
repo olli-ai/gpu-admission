@@ -23,8 +23,10 @@ spec:
     spec:
       containers:
       - name: kube-scheduler
-        image: gcr.io/google_containers/hyperkube:v1.14.10
-        imagePullPolicy: IfNotPresent
+        # image: gcr.io/google_containers/hyperkube:v1.14.10
+        # imagePullPolicy: IfNotPresent
+        image: asia.gcr.io/olli-iviet/kube-scheduler
+        imagePullPolicy: Always
         args:
         - kube-scheduler
         - --policy-config-file=/gpu-admission-config/policy.json
