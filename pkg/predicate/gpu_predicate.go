@@ -331,11 +331,11 @@ func (gpuFilter *GPUFilter) deviceFilter(
 					annotationMap[k] = v
 				}
 			}
-			// err := gpuFilter.patchPodWithAnnotations(newPod, annotationMap)
-			// if err != nil {
-			// 	failedNodesMap[node.Name] = "update pod annotation failed"
-			// 	continue
-			// }
+			err := gpuFilter.patchPodWithAnnotations(newPod, annotationMap)
+			if err != nil {
+				failedNodesMap[node.Name] = "update pod annotation failed"
+				continue
+			}
 			filteredNodes = append(filteredNodes, *node)
 			success = true
 		}

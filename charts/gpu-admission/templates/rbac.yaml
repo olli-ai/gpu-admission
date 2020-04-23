@@ -9,9 +9,9 @@ rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps", "namespaces", "nodes", "pods"]
   verbs: ["get", "watch", "list"]
-# - apiGroups: [""] # "" indicates the core API group
-#   resources: ["pods"]
-#   verbs: ["update", "patch"]
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["update", "patch"]
 # extra rules for kubernetes-scheduler
 - apiGroups: ["storage.k8s.io"]
   resources: ["storageclasses", "csinodes"]
