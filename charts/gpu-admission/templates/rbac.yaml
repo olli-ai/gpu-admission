@@ -1,4 +1,4 @@
-kind: ClusterRole
+kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: gpu-admission
@@ -17,22 +17,21 @@ rules:
   resources: ["storageclasses", "csinodes"]
   verbs: ["get", "watch", "list"]
 ---
-kind: ClusterRoleBinding
+kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: gpu-admission
   labels:
     k8s-app: gpu-admission
 roleRef:
-  kind: ClusterRole
+  kind: Role
   name: gpu-admission
   apiGroup: rbac.authorization.k8s.io
 subjects:
-  - kind: ServiceAccount
-    name: gpu-admission
-    namespace: {{ .Release.Namespace }}
+- kind: ServiceAccount
+  name: gpu-admission
 ---
-kind: ClusterRoleBinding
+kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: gpu-admission-system
@@ -43,9 +42,8 @@ roleRef:
   name: system:kube-scheduler
   apiGroup: rbac.authorization.k8s.io
 subjects:
-  - kind: ServiceAccount
-    name: gpu-admission
-    namespace: {{ .Release.Namespace }}
+- kind: ServiceAccount
+  name: gpu-admission
 ---
 kind: ServiceAccount
 apiVersion: v1
